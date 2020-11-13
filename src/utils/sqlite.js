@@ -40,28 +40,11 @@ export default class Sqlite {
         })
     }
 
-    static saveAction(action){
-        return new Promise((resolve) => {
-            try {
-                let sql = `INSERT INTO MyActions (actionId, date) VALUES ("${action.id}", "${action.date}")`;
-
-                Sqlite.db.transaction(tx =>  {
-                    tx.executeSql(sql, [],
-                        (tx, results) =>  resolve({status: 'ok'})
-                    )
-                });
-            }
-            catch(err) {
-                console.log(err)
-                resolve({status:'error'});
-            }
-        })
-    }
-
     static executeNonQuery(sql){
         return new Promise((resolve, reject) => {
             try {
                 Sqlite.db.transaction(tx =>  {
+                    console.log("executeNonQuery", sql)
                     tx.executeSql(sql, [],
                         (tx, result) =>  resolve(result)
                     )
@@ -72,17 +55,6 @@ export default class Sqlite {
                 reject(err);
             }
         })
-    }
-
-    static clearMyActions(){
-        return new Promise((resolve) => {
-            Sqlite.db.transaction(tx =>  {
-                tx.executeSql("DELETE FROM MyActions", [],
-                    (tx, results) => {
-                        resolve({status: 'ok'});
-                    });
-            });
-        });
     }
 
     static disconnect(){

@@ -126,7 +126,7 @@ export default class MyActions {
     }
 
     static save(actionId) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             let date = new Date().getTime();
             let expire = MyActions.expire;
             let sql1 = `INSERT INTO MyActions (actionId, date) VALUES (${actionId}, ${date})`;
@@ -162,6 +162,6 @@ export default class MyActions {
 
     // FOR DEBUG
     static clearMyActions(){
-        Sqlite.clearMyActions()
+        Sqlite.executeNonQuery("DELETE FROM MyActions");
     }
 } 

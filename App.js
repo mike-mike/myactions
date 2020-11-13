@@ -19,7 +19,11 @@ export default class App extends React.Component {
 
     this.loadActions(true);
   }
-   
+  
+  componentWillUnmount(){
+    Sqlite.disconnect();
+  }
+
   render(){
     return (
       <SafeAreaView style={{flex:1,paddingTop:30,direction:"rtl"}}>

@@ -54,7 +54,7 @@ export default class MyActions {
     static getMyActions(){
         return new Promise(async (resolve) => {
             try{
-                let expire = new Date().getTime() + 90 * 24 * 60 * 60 * 1000;
+                let expire = MyActions.expire;
                 let sql = `SELECT actionId, COUNT(actionId) AS c FROM MyActions GROUP BY actionId HAVING DATE < ${expire} ORDER BY c DESC LIMIT ${MyActions.MY_ACTIONS_COUNT}`
 
                 // get my actions
@@ -126,12 +126,26 @@ export default class MyActions {
     }
 
     static save(actionId) {
-        let action = {
-            id: Math.floor(Math.random() * 5 + 1),
-            date: new Date().getTime()
-        }
+        return new Promise(async (resolve, reject) => {
+            let date = new Date().getTime();
+            let expire = MyActions.expire;
+            let sql1 = `INSERT INTO MyActions (actionId, date) VALUES (${actionId}, ${date})`;
+            let sql2 = `DELETE FROM MyActions WHERE date WHERE date > ${expire}`;
+            let p1 = Sqlite.executeNonQuery(sql1);
+            let p2 = Sqlite.executeNonQuery(sql2);
 
-        return Sqlite.saveAction(action);
+            Promise.all([p1, p2])
+                .then(values => {
+                    resolve({status: 'ok'})
+                })
+                .catch(err => {
+                    resolve({status: 'error'})
+                })
+        })
+    }
+
+    static get expire (){
+        return  new Date().getTime() + 90 * 24 * 60 * 60 * 1000;
     }
 
     // FOR DEBUG

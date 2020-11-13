@@ -58,6 +58,22 @@ export default class Sqlite {
         })
     }
 
+    static executeNonQuery(sql){
+        return new Promise((resolve, reject) => {
+            try {
+                Sqlite.db.transaction(tx =>  {
+                    tx.executeSql(sql, [],
+                        (tx, result) =>  resolve(result)
+                    )
+                });
+            }
+            catch(err) {
+                console.log(err)
+                reject(err);
+            }
+        })
+    }
+
     static clearMyActions(){
         return new Promise((resolve) => {
             Sqlite.db.transaction(tx =>  {

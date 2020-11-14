@@ -92,7 +92,8 @@ export default class MyActions {
         // replace items in the source array to preserve items order
         for(let i = 0; i < actions.length; i++) {
             // search action details in the details array and replace 
-            actions[i] = details.find(a => a.id == actions[i].actionId);
+            let detail = details.find(a => a.id == actions[i].actionId);
+            actions[i] = {...actions[i], ...detail};
         }
 
         return actions;
